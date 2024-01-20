@@ -9,9 +9,4 @@ router
   .all(methods(['GET']))
   .get(controller.getAccessToken);
 
-router
-  .route('/refresh')
-  .all(methods(['POST']))
-  .post(controller.refreshToken);
-
 export default router;

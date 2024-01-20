@@ -75,42 +75,14 @@ function buildAccessToken(): string {
   return token;
 }
 
-export function buildRefreshToken(): string {
-  const options: jwt.SignOptions = { algorithm: 'HS256' };
-  const token = jwt.sign(
-    {
-      iat: Date.now() / 1000,
-      exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7,
-      access_token: generateKey(16),
-      purpose: 'refresh',
-    },
-    getJwtSecret(),
-    options
-  );
-
-  return token;
-}
-
 export function generateApiKey(): {
   access_token: string;
-  refresh_token: string;
   type: string;
 } {
   const result = {
     access_token: buildAccessToken(),
-    refresh_token: buildRefreshToken(),
     type: 'Bearer',
   };
 
   return result;
-}
-
-export function refreshToken(token: string): string | null {
-  const decoded = verifyToken(token);
-
-  if (decoded === null) {
-    return null;
-  }
-
-  return buildAccessToken();
 }
