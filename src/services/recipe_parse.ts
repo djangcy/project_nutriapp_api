@@ -29,7 +29,7 @@ class RecipeParseService {
     });
 
     if (!options.success) {
-      throw AppError.badRequest(zodErrorToString(options.error));
+      throw AppError.badRequest('Malformed Query');
     }
 
     const result = await RecipeSearch.getAll(options.data);
