@@ -39,10 +39,6 @@ app.get('/docs', setupSwaggerUi);
 app.use('/api/tokens', AccessToken);
 app.use('/api/recipe-search', validateApiKey, RecipeSearch);
 
-app.use('/ready', (req: Request, res: Response) => {
-  res.status(200).send('OK');
-});
-
 // redirects
 app.use('/', (req: Request, res: Response) => {
   res.redirect('/docs');

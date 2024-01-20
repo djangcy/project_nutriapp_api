@@ -17,7 +17,7 @@ function getJwtSecret(): string {
   return jwtSecret;
 }
 
-export function verifyToken(token: string): string | jwt.JwtPayload {
+export function verifyToken(token: string | null): string | jwt.JwtPayload {
   if (!token || token.length === 0) {
     throw AppError.badRequest('Missing authentication token.');
   }
@@ -32,24 +32,14 @@ export function verifyToken(token: string): string | jwt.JwtPayload {
       switch (error.message) {
         case 'invalid token':
           throw AppError.unauthorized('Invalid Token');
+        case 'invalid signature':
+          throw AppError.unauthorized('Outdated Token');
       }
     }
 
+    console.log(error);
+
     throw AppError.unauthorized();
-  }
-
-  if (typeof decoded !== 'string') {
-    if (
-      'exp' in decoded &&
-      decoded.exp &&
-      new Date(decoded.exp * 1000) > new Date()
-    ) {
-      throw AppError.unauthorized('Token Expired');
-    }
-
-    if ('purpose' in decoded && decoded.purpose === 'refresh') {
-      throw AppError.unauthorized('Invalid Token');
-    }
   }
 
   return decoded;
@@ -65,24 +55,8 @@ function buildAccessToken(): string {
   const token = jwt.sign(
     {
       iat: Date.now() / 1000,
-      exp: Math.floor(Date.now() / 1000) + 60 * 60,
+      // exp: Math.floor(Date.now() / 1000) + 60 * 60,
       access_token: generateKey(32),
-    },
-    getJwtSecret(),
-    options
-  );
-
-  return token;
-}
-
-export function buildRefreshToken(): string {
-  const options: jwt.SignOptions = { algorithm: 'HS256' };
-  const token = jwt.sign(
-    {
-      iat: Date.now() / 1000,
-      exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7,
-      access_token: generateKey(16),
-      purpose: 'refresh',
     },
     getJwtSecret(),
     options
@@ -93,24 +67,12 @@ export function buildRefreshToken(): string {
 
 export function generateApiKey(): {
   access_token: string;
-  refresh_token: string;
   type: string;
 } {
   const result = {
     access_token: buildAccessToken(),
-    refresh_token: buildRefreshToken(),
     type: 'Bearer',
   };
 
   return result;
-}
-
-export function refreshToken(token: string): string | null {
-  const decoded = verifyToken(token);
-
-  if (decoded === null) {
-    return null;
-  }
-
-  return buildAccessToken();
 }
