@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
+import crypto from 'crypto';
 
 import * as TokenUtils from '../services/token_service';
 import AppError from '../utils/app_error';
@@ -14,11 +15,18 @@ class AccessTokenController {
 
       const requestKey = req.query.key;
 
-      if (!requestKey) {
+      if (!requestKey || !(typeof requestKey == 'string')) {
         throw AppError.badRequest();
       }
 
-      if (adminKey !== requestKey) {
+      const encoder = new TextEncoder();
+
+      if (
+        !crypto.timingSafeEqual(
+          encoder.encode(adminKey),
+          encoder.encode(requestKey)
+        )
+      ) {
         throw AppError.forbidden();
       }
 
