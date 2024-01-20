@@ -1,0 +1,388 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Nutriapp API",
+    "version": "1.0.0"
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "parameters": {
+      "RecipeSearchParamsType": {
+        "in": "query",
+        "name": "type",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "public",
+            "private",
+            "any"
+          ],
+          "default": "public"
+        },
+        "description": "Type of recipe (public, private, or any)"
+      },
+      "RecipeSearchParamsQ": {
+        "in": "query",
+        "name": "q",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "minLength": 1
+        },
+        "description": "Query string for recipe search"
+      },
+      "RecipeSearchParamsFrom": {
+        "in": "query",
+        "name": "from",
+        "schema": {
+          "type": "number",
+          "format": "int32",
+          "minimum": 1
+        },
+        "description": "Starting index for paginated results"
+      },
+      "RecipeSearchParamsTo": {
+        "in": "query",
+        "name": "to",
+        "schema": {
+          "type": "number",
+          "format": "int32",
+          "minimum": 1
+        },
+        "description": "Ending index for paginated results"
+      },
+      "RecipeSearchParamsIngr": {
+        "in": "query",
+        "name": "ingr",
+        "schema": {
+          "type": "number",
+          "format": "int32",
+          "minimum": 1
+        },
+        "description": "Minimum number of ingredients"
+      },
+      "RecipeSearchParamsDiet": {
+        "in": "query",
+        "name": "diet",
+        "schema": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "balanced",
+              "high-fiber",
+              "high-protein",
+              "low-carb",
+              "low-fat",
+              "low-sodium"
+            ]
+          }
+        },
+        "description": "Diet type"
+      },
+      "RecipeSearchParamsHealth": {
+        "in": "query",
+        "name": "health",
+        "schema": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "alcohol-cocktail",
+              "alcohol-free",
+              "celery-free",
+              "crustacean-free",
+              "dairy-free",
+              "DASH",
+              "egg-free",
+              "fish-free",
+              "fodmap-free",
+              "gluten-free",
+              "immuno-supportive",
+              "keto-friendly",
+              "kidney-friendly",
+              "kosher",
+              "low-fat-abs",
+              "low-potassium",
+              "low-sugar",
+              "lupine-free",
+              "Medditerranean",
+              "mollusk-free",
+              "mustard-free",
+              "no-oil-added",
+              "paleo",
+              "peanut-free",
+              "pescetarian",
+              "pork-free",
+              "red-meat-free",
+              "sesame-free",
+              "shellfish-free",
+              "soy-free",
+              "sugar-conscious",
+              "sulfite-free",
+              "tree-nut-free",
+              "vegan",
+              "vegetarian",
+              "wheat-free"
+            ]
+          }
+        },
+        "description": "Health label"
+      },
+      "RecipeSearchParamsCuisineType": {
+        "in": "query",
+        "name": "cuisineType",
+        "schema": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "American",
+              "Asian",
+              "British",
+              "Caribbean",
+              "Central Europe",
+              "Chinese",
+              "Eastern Europe",
+              "French",
+              "Indian",
+              "Italian",
+              "Japanese",
+              "Kosher",
+              "Mediterranean",
+              "Mexican",
+              "Middle Eastern",
+              "Nordic",
+              "South American",
+              "South East Asian"
+            ]
+          }
+        },
+        "description": "Cuisine type"
+      },
+      "RecipeSearchParamsMealType": {
+        "in": "query",
+        "name": "mealType",
+        "schema": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "Breakfast",
+              "Dinner",
+              "Lunch",
+              "Snack",
+              "Teatime"
+            ]
+          }
+        },
+        "description": "Meal type"
+      },
+      "RecipeSearchParamsDishType": {
+        "in": "query",
+        "name": "dishType",
+        "schema": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "Biscuit and cookies",
+              "Bread",
+              "Cereals",
+              "Condiments and sauces",
+              "Desserts",
+              "Drinks",
+              "Main course",
+              "Pancake",
+              "Preps",
+              "Preserve",
+              "Salad",
+              "Sandwiches",
+              "Side dish",
+              "Soup",
+              "Starter",
+              "Sweets"
+            ]
+          }
+        },
+        "description": "Dish type"
+      },
+      "RecipeSearchParamsCalories": {
+        "in": "query",
+        "name": "calories",
+        "schema": {
+          "type": "string"
+        },
+        "description": "Caloric content filter"
+      },
+      "RecipeSearchParamsTime": {
+        "in": "query",
+        "name": "time",
+        "schema": {
+          "type": "string"
+        },
+        "description": "Time filter"
+      },
+      "RecipeSearchParamsExcluded": {
+        "in": "query",
+        "name": "excluded",
+        "schema": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "description": "Excluded ingredients"
+      }
+    }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/recipe-search/": {
+      "get": {
+        "tags": [
+          "Recipe Search"
+        ],
+        "summary": "Returns a list of recipes based on the query.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/RecipeSearchParamsType"
+          },
+          {
+            "$ref": "#/components/parameters/RecipeSearchParamsQ"
+          },
+          {
+            "$ref": "#/components/parameters/RecipeSearchParamsFrom"
+          },
+          {
+            "$ref": "#/components/parameters/RecipeSearchParamsTo"
+          },
+          {
+            "$ref": "#/components/parameters/RecipeSearchParamsIngr"
+          },
+          {
+            "$ref": "#/components/parameters/RecipeSearchParamsDiet"
+          },
+          {
+            "$ref": "#/components/parameters/RecipeSearchParamsHealth"
+          },
+          {
+            "$ref": "#/components/parameters/RecipeSearchParamsCuisineType"
+          },
+          {
+            "$ref": "#/components/parameters/RecipeSearchParamsMealType"
+          },
+          {
+            "$ref": "#/components/parameters/RecipeSearchParamsDishType"
+          },
+          {
+            "$ref": "#/components/parameters/RecipeSearchParamsCalories"
+          },
+          {
+            "$ref": "#/components/parameters/RecipeSearchParamsTime"
+          },
+          {
+            "$ref": "#/components/parameters/RecipeSearchParamsExcluded"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns a list of recipes"
+          }
+        }
+      }
+    },
+    "/api/recipe-search/by-uri": {
+      "get": {
+        "tags": [
+          "Recipe Search"
+        ],
+        "summary": "Returns a single recipe by URI.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/RecipeSearchParamsType"
+          },
+          {
+            "name": "uri",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns a single recipe"
+          }
+        }
+      }
+    },
+    "/api/recipe-search/{id}": {
+      "get": {
+        "tags": [
+          "Recipe Search"
+        ],
+        "summary": "Returns a single recipe by ID.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/RecipeSearchParamsType"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns a single recipe"
+          }
+        }
+      }
+    },
+    "/api/recipe-search/query": {
+      "post": {
+        "tags": [
+          "Recipe Search"
+        ],
+        "summary": "Returns a single recipe from a natural language query.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "type": "string",
+                    "description": "Natural language query"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Returns a list of recipes"
+          }
+        }
+      }
+    }
+  },
+  "tags": []
+}
