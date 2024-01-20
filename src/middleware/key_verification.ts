@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import * as tokenHelpers from '../services/token_service';
+import * as TokenService from '../services/token_service';
 import AppError from '../utils/app_error';
 
 //* https://security.stackexchange.com/a/266207
@@ -23,12 +23,8 @@ export const validateApiKey = async (
   try {
     const token = extractToken(req);
 
-    if (!token) {
-      throw AppError.unauthorized();
-    }
-    	
     // Error is thrown if unsuccessful
-    tokenHelpers.verifyToken(token);
+    TokenService.verifyToken(token);
 
     next();
   } catch (error) {

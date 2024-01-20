@@ -1,6 +1,6 @@
 import Config from '../config';
 import EdamamQueryClient from '../clients/edamam_query';
-import { removeUndefinedValues } from '../utils/index';
+import { removeUndefinedValues } from 'utils/remove_undefined_values';
 
 const edamamRecipeTokens = {
   app_id: Config.edamamRecipeAppId,
