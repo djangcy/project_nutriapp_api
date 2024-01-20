@@ -43,36 +43,6 @@ class AccessTokenController {
       }
     }
   };
-
-  static refreshToken = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) => {
-    try {
-      const requestToken = req.body.refreshToken;
-
-      if (!requestToken) {
-        next(AppError.badRequest());
-      }
-
-      const result = TokenUtils.refreshToken(requestToken);
-
-      if (!result) {
-        throw AppError.badRequest('Invalid Token');
-      }
-
-      res.status(200).json({
-        token: result,
-      });
-    } catch (error) {
-      if (error instanceof AppError) {
-        next(error);
-      } else if (error instanceof Error) {
-        next(AppError.fromError(error));
-      }
-    }
-  };
 }
 
 export default AccessTokenController;
