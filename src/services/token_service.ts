@@ -17,7 +17,7 @@ function getJwtSecret(): string {
   return jwtSecret;
 }
 
-export function verifyToken(token: string): string | jwt.JwtPayload {
+export function verifyToken(token: string | null): string | jwt.JwtPayload {
   if (!token || token.length === 0) {
     throw AppError.badRequest('Missing authentication token.');
   }
